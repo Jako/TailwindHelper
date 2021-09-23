@@ -1,0 +1,27 @@
+.treehillstudio_about {
+  position: absolute;
+  right: 15px;
+  top: 0;
+  cursor: pointer;
+  height: 40px;
+  opacity: 0.25;
+  transition: opacity 0.5s;
+  margin-top: 20px;
+}
+
+.treehillstudio_about:hover {
+  opacity: 1;
+}
+
+.treehillstudio_about .x-panel-body {
+  text-align: right;
+}
+
+.treehillstudio_window a {
+  color: #b2bf28;
+  text-decoration: none;
+}
+
+.treehillstudio_window a:hover {
+  color: #77801a;
+}

@@ -1,0 +1,25 @@
+{
+  "name": "treehillstudio/tailwindhelper",
+  "description": "MODX Helper for Tailwind",
+  "authors": [
+    {
+      "name": "Thomas Jakobi",
+      "email": "office@treehillstudio.com",
+      "homepage": "https://treehillstudio.com"
+    }
+  ],
+  "license": "proprietary",
+  "config": {
+    "platform": {
+      "php": "7.2.0"
+    }
+  },
+  "require": {
+    "php": ">=7.2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "TreehillStudio\\TailwindHelper\\": "src/"
+    }
+  }
+}
