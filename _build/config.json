@@ -15,13 +15,6 @@
       }
     ],
     "elements": {
-      "snippets": [
-        {
-          "name": "TailwindScanClasses",
-          "file": "tailwindscanclasses.snippet.php",
-          "description": "Scan MODX elements for Tailwind classes"
-        }
-      ],
       "plugins": [
         {
           "name": "TailwindHelper",

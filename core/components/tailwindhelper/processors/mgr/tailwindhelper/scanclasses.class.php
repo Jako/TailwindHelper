@@ -79,7 +79,7 @@ class TailwindHelperScanClassesProcessor extends Processor
 
         sleep(1);
 
-        return $this->success();
+        return $this->success(json_encode($classes, JSON_PRETTY_PRINT));
     }
 }
 
