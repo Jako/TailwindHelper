@@ -39,7 +39,7 @@ class TailwindHelper
      * The version
      * @var string $version
      */
-    public $version = '1.0.2';
+    public $version = '1.0.3';
 
     /**
      * The class options
@@ -196,9 +196,11 @@ class TailwindHelper
             if (empty($alpineClasses['classlist'])) {
                 continue;
             }
-            $currentAlpineClasses = explode(' ', $alpineClasses['classlist']);
-            if (!empty($currentAlpineClasses)) {
-                $classes = array_merge($classes, $currentAlpineClasses);
+            foreach ($alpineClasses['classlist'] as $currentAlpineClasses) {
+                $currentAlpineClasses = explode(' ', $currentAlpineClasses);
+                if (!empty($currentAlpineClasses)) {
+                    $classes = array_merge($classes, $currentAlpineClasses);
+                }
             }
         }
 
