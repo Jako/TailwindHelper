@@ -4,7 +4,7 @@ MODX Helper for Tailwind
 
 ## Features
 
-This MODX Extra adds some Tailwind helpers to the MODX installation:
+This MODX Extra adds a Tailwind helper to the MODX installation:
 - Write a safelist.json on base on chunk, template and resource content
 
 ## Installation
