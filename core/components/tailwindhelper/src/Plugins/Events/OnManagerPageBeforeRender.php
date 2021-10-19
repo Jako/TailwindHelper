@@ -1,6 +1,6 @@
 <?php
 /**
- * @package consentfriend
+ * @package tailwindhelper
  * @subpackage plugin
  */
 
