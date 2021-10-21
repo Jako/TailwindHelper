@@ -173,6 +173,18 @@ module.exports = function (grunt) {
                         replacement: '© ' + (new Date().getFullYear() > 2021 ? '2021-' : '') + new Date().getFullYear() + ' by'
                     }]
                 }
+            },
+            docs: {
+                files: [{
+                    src: 'mkdocs.yml',
+                    dest: 'mkdocs.yml'
+                }],
+                options: {
+                    replacements: [{
+                        pattern: /&copy; \d{4}(-\d{4})?/g,
+                        replacement: '&copy; ' + (new Date().getFullYear() > 2021 ? '2021-' : '') + new Date().getFullYear()
+                    }]
+                }
             }
         }
     });
