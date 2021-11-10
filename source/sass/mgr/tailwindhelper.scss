@@ -2,20 +2,22 @@ $treehillstudio-color: #cbd842;
 $red: #be0000;
 $primary: #00948e;
 
-.treehillstudio_about {
-  position: absolute;
-  right: 15px;
-  top: 0;
-  cursor: pointer;
-  height: 40px;
-  opacity: 0.25;
-  transition: opacity 0.5s;
-  margin-top: 20px;
-  &:hover {
-    opacity: 1;
-  }
-  .x-panel-body {
-    text-align: right;
+.x-window {
+  .treehillstudio_about {
+    position: absolute;
+    right: 15px;
+    top: 0;
+    cursor: pointer;
+    height: 40px;
+    opacity: 0.25;
+    transition: opacity 0.5s;
+    margin-top: 20px;
+    &:hover {
+      opacity: 1;
+    }
+    .x-panel-body {
+      text-align: right;
+    }
   }
 }
 
