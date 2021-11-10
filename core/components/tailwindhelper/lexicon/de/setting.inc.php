@@ -6,6 +6,6 @@
  * @subpackage lexicon
  */
 $_lang['setting_tailwindhelper.debug'] = 'Debug';
-$_lang['setting_tailwindhelper.debug_desc'] = 'Log debug informations in MODX error log.';
-$_lang['setting_tailwindhelper.safelistFolder'] = 'Safelist Folder';
-$_lang['setting_tailwindhelper.safelistFolder_desc'] = 'The location of the safelist.json';
+$_lang['setting_tailwindhelper.debug_desc'] = 'Debug-Informationen im MODX Fehlerprotokoll ausgeben.';
+$_lang['setting_tailwindhelper.safelistFolder'] = 'Safelist Ordner';
+$_lang['setting_tailwindhelper.safelistFolder_desc'] = 'Der Speicherort der Datei safelist.json';
