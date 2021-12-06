@@ -325,6 +325,26 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#example-usage" class="md-nav__link">
+    Example usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Example usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parcel-2" class="md-nav__link">
+    Parcel 2
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -385,6 +405,26 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#example-usage" class="md-nav__link">
+    Example usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Example usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parcel-2" class="md-nav__link">
+    Parcel 2
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -433,6 +473,21 @@ the list as individual classes.</p>
 </tr>
 </tbody>
 </table>
+<h2 id="example-usage">Example usage</h2>
+<h3 id="parcel-2">Parcel 2</h3>
+<p>If you want to purge your tailwind css with <a href="https://parceljs.org/">Parcel 2</a>,
+you have to refer the created <code>safelist.json</code> in the <code>tailwind.config.js</code> to reduce
+the size of the build:</p>
+<div class="highlight"><pre><span></span><code>const safelist = require(&#39;./path-to-your-core/core/components/tailwindhelper/elements/purge/safelist.json&#39;);
+
+module.exports = {
+    ...
+    purge: {
+        content: [&#39;./src/**/*.html&#39;],
+        safelist: safelist
+    },
+    ...
+</code></pre></div>
                 
               
               
