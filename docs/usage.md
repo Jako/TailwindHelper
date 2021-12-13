@@ -19,3 +19,23 @@ TailwindHelper uses the following system settings in the namespace
 Key | Description | Default
 ----|-------------|--------
 tailwindhelper.safelistFolder | The location of the safelist.json | `{core_path}components/tailwindhelper/elements/purge/`
+
+## Example usage 
+
+### Parcel 2/Webpack
+
+If you want to purge your tailwind css with [Parcel 2](https://parceljs.org/) or in [Webpack](https://webpack.js.org/),
+you have to refer the created `safelist.json` in the `tailwind.config.js` to reduce
+the size of the build:
+
+```
+const safelist = require('./path-to-your-core/core/components/tailwindhelper/elements/purge/safelist.json');
+
+module.exports = {
+    ...
+    purge: {
+        content: ['./src/**/*.html'],
+        safelist: safelist
+    },
+    ...
+```
