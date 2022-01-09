@@ -52,8 +52,8 @@ TailwindHelper.window.Console = function (config) {
             cls: "treehillstudio_about",
             html: '<img width="146" height="40" src="' + TailwindHelper.config.assetsUrl + 'img/mgr/treehill-studio-small.png"' + ' srcset="' + TailwindHelper.config.assetsUrl + 'img/mgr/treehill-studio-small@2x.png 2x" alt="Treehill Studio">',
             listeners: {
-                afterrender: function (component) {
-                    component.getEl().select('img').on('click', function () {
+                afterrender: function () {
+                    this.getEl().select('img').on('click', function () {
                         var msg = '<span style="display: inline-block; text-align: center"><img src="' + TailwindHelper.config.assetsUrl + 'img/mgr/treehill-studio.png" srcset="' + TailwindHelper.config.assetsUrl + 'img/mgr/treehill-studio@2x.png 2x" alt="Treehill Studio"><br>' +
                             '&copy; 2021 by <a href="https://treehillstudio.com" target="_blank">treehillstudio.com</a></span>';
                         Ext.Msg.show({
