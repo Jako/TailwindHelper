@@ -17,7 +17,7 @@ class TailwindScanClasses extends Snippet
      *
      * @return array
      */
-    public function getDefaultProperties(): array
+    public function getDefaultProperties()
     {
         return [
             'listId' => $this->tailwindhelper->getOption('list_id', [], (isset($this->modx->resource)) ? $this->modx->resource->get('id') : 0),
@@ -30,7 +30,7 @@ class TailwindScanClasses extends Snippet
      * @return string
      * @throws /Exception
      */
-    public function execute(): string
+    public function execute()
     {
         $processorsPath = $this->tailwindhelper->getOption('processorsPath');
 
