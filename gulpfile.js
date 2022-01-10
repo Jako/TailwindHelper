@@ -72,7 +72,7 @@ gulp.task('sass-mgr', function () {
 });
 
 gulp.task('images-mgr', function () {
-    return gulp.src('./source/img/**/*.(png|jpg|gif|svg)')
+    return gulp.src('./source/img/**/*.+(png|jpg|gif|svg)')
         .pipe(gulp.dest('assets/components/tailwindhelper/img/mgr/'));
 });
 
