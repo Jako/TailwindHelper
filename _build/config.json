@@ -18,6 +18,7 @@
       "plugins": [
         {
           "name": "TailwindHelper",
+          "description": "MODX Helper for Tailwind",
           "file": "tailwindhelper.plugin.php",
           "events": [
             "OnManagerPageBeforeRender"
