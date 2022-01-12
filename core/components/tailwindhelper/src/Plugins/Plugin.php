@@ -32,7 +32,7 @@ abstract class Plugin
     public function __construct($modx, &$scriptProperties)
     {
         $this->scriptProperties = &$scriptProperties;
-        $this->modx = &$modx;
+        $this->modx =& $modx;
         $corePath = $this->modx->getOption('tailwindhelper.core_path', null, $this->modx->getOption('core_path') . 'components/tailwindhelper/');
         $this->tailwindhelper = $this->modx->getService('tailwindhelper', 'TailwindHelper', $corePath . 'model/tailwindhelper/', [
             'core_path' => $corePath
