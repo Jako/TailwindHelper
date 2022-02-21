@@ -8,13 +8,11 @@
 
 namespace TreehillStudio\TailwindHelper\Snippets;
 
-use DateInterval;
 use modX;
 use TreehillStudio\TailwindHelper\TailwindHelper;
 
 /**
  * Class Snippet
- * @package TailwindHelper
  */
 abstract class Snippet
 {
@@ -22,23 +20,25 @@ abstract class Snippet
      * A reference to the modX instance
      * @var modX $modx
      */
-    protected $modx;
+    public modX $modx;
+
     /**
      * A reference to the TailwindHelper instance
      * @var TailwindHelper $tailwindhelper
      */
-    protected $tailwindhelper;
+    public $tailwindhelper;
+
     /**
      * The snippet properties
      * @var array $properties
      */
-    protected $properties = [];
+    public array $properties = [];
 
     /**
      * The optional property prefix for snippet properties
      * @var string $propertyPrefix
      */
-    protected $propertyPrefix = '';
+    public string $propertyPrefix = '';
 
     /**
      * Creates a new Snippet instance.
@@ -51,7 +51,6 @@ abstract class Snippet
         $this->modx =& $modx;
 
         $corePath = $this->modx->getOption('tailwindhelper.core_path', null, $this->modx->getOption('core_path') . 'components/tailwindhelper/');
-        /** @var TailwindHelper $tailwindhelper */
         $this->tailwindhelper = $this->modx->getService('tailwindhelper', 'TailwindHelper', $corePath . 'model/tailwindhelper/', [
             'core_path' => $corePath
         ]);
