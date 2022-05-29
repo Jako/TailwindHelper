@@ -20,49 +20,10 @@ class TailwindHelperScanClassesProcessor extends Processor
     {
         $classes = [];
 
-        /** @var \modChunk[] $chunks */
-        $chunks = $this->modx->getIterator('modChunk');
-        foreach ($chunks as $chunk) {
-            $chunkContent = $chunk->get('content');
-
-            $classes = array_merge($classes, $this->tailwindhelper->getDefaultClasses($chunkContent));
-            $classes = array_merge($classes, $this->tailwindhelper->getAlpineClasses($chunkContent));
-        }
-        $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_chunks'));
-        $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_found', ['count' => count($classes)]));
-
-        /** @var \modTemplate[] $templates */
-        $templates = $this->modx->getIterator('modTemplate');
-        foreach ($templates as $template) {
-            $templateContent = $template->get('content');
-
-            $classes = array_merge($classes, $this->tailwindhelper->getDefaultClasses($templateContent));
-            $classes = array_merge($classes, $this->tailwindhelper->getAlpineClasses($templateContent));
-        }
-        $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_templates'));
-        $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_found', ['count' => count($classes)]));
-
-        /** @var \modResource[] $resources */
-        $resources = $this->modx->getIterator('modResource');
-        foreach ($resources as $resource) {
-            $resourceContent = $resource->get('content');
-
-            $classes = array_merge($classes, $this->tailwindhelper->getDefaultClasses($resourceContent));
-            $classes = array_merge($classes, $this->tailwindhelper->getAlpineClasses($resourceContent));
-        }
-        $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_resources'));
-        $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_found', ['count' => count($classes)]));
-
-        /** @var \modTemplateVarResource[] $templateVars */
-        $templateVars = $this->modx->getIterator('modTemplateVarResource');
-        foreach ($templateVars as $templateVar) {
-            $templateVarContent = $templateVar->get('value');
-
-            $classes = array_merge($classes, $this->tailwindhelper->getDefaultClasses($templateVarContent));
-            $classes = array_merge($classes, $this->tailwindhelper->getAlpineClasses($templateVarContent));
-        }
-        $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_tvs'));
-        $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_found', ['count' => count($classes)]));
+        $classes = array_merge($classes, $this->getTypeClasses('modChunk', 'content', $this->modx->lexicon('tailwindhelper.scan_chunks')));
+        $classes = array_merge($classes, $this->getTypeClasses('modTemplate', 'content', $this->modx->lexicon('tailwindhelper.scan_templates')));
+        $classes = array_merge($classes, $this->getTypeClasses('modResource', 'content', $this->modx->lexicon('tailwindhelper.scan_resources')));
+        $classes = array_merge($classes, $this->getTypeClasses('modTemplateVarResource', 'value', $this->modx->lexicon('tailwindhelper.scan_tvs')));
 
         $classes = array_unique(array_filter($classes));
         sort($classes);
@@ -75,11 +36,35 @@ class TailwindHelperScanClassesProcessor extends Processor
         }
         $this->modx->cacheManager->writeFile($path . 'safelist.json', json_encode($classes, JSON_PRETTY_PRINT));
 
-        $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_result', ['path' => $path]));
+        $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_result'));
+        $this->modx->log(xPDO::LOG_LEVEL_INFO, $path);
 
         sleep(1);
 
         return $this->success(json_encode($classes, JSON_PRETTY_PRINT));
+    }
+
+    /**
+     * @param string $className
+     * @param string $keyName
+     * @param string $message
+     * @return array
+     */
+    private function getTypeClasses($className, $keyName, $message)
+    {
+        $classes = [];
+        /** @var xPDOObject[] $objects */
+        $objects = $this->modx->getIterator($className);
+        foreach ($objects as $object) {
+            $objectContent = $object->get($keyName);
+
+            $classes = array_merge($classes, $this->tailwindhelper->getDefaultClasses($objectContent));
+            $classes = array_merge($classes, $this->tailwindhelper->getAlpineClasses($objectContent));
+        }
+        $this->modx->log(xPDO::LOG_LEVEL_INFO,  $message);
+        $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_found', ['count' => count($classes)]));
+
+        return $classes;
     }
 }
 
