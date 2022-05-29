@@ -37,6 +37,12 @@
         "key": "safelistFolder",
         "area": "site",
         "value": "{core_path}components/tailwindhelper/elements/purge/"
+      },
+      {
+        "key": "removeModxTags",
+        "type": "combo-boolean",
+        "area": "site",
+        "value": "1"
       }
     ]
   },

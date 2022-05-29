@@ -172,7 +172,11 @@ class TailwindHelper
                 $classes = array_merge($classes, $currentClasses);
             }
         }
-        return array_filter($classes, [$this, 'filterEmpty']);
+
+        $classes = array_filter($classes, [$this, 'filterEmpty']);
+        $classes = array_filter($classes, [$this, 'filterModxTags']);
+
+        return $classes;
     }
 
     /**
@@ -204,11 +208,23 @@ class TailwindHelper
             }
         }
 
-        return array_filter($classes, [$this, 'filterEmpty']);
+        $classes = array_filter($classes, [$this, 'filterEmpty']);
+        $classes = array_filter($classes, [$this, 'filterModxTags']);
+
+        return $classes;
     }
 
     private function filterEmpty($var)
     {
         return ($var !== null && $var !== false && $var !== "");
+    }
+
+    private function filterModxTags($var)
+    {
+        if ($this->getOption('removeModxTags')) {
+            return (strpos($var, '[[') === false && strpos($var, ']]') === false);
+        } else {
+            return true;
+        }
     }
 }
