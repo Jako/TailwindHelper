@@ -11,6 +11,6 @@ $_lang['tailwindhelper.menu_desc'] = 'Tailwind Safelist aktualisieren';
 $_lang['tailwindhelper.scan_chunks'] = 'Chunk-Inhalt gescannt nach CSS-Klassen:';
 $_lang['tailwindhelper.scan_found'] = 'Insgesamt [[+count]] CSS-Klassen gefunden.';
 $_lang['tailwindhelper.scan_resources'] = 'Ressourcen-Inhalt gescannt nach CSS-Klassen:';
-$_lang['tailwindhelper.scan_result'] = 'Die Klassenliste wird in "[[+ path]]" gespeichert.';
+$_lang['tailwindhelper.scan_result'] = 'Die Klassenliste wurde gespeichert:';
 $_lang['tailwindhelper.scan_templates'] = 'Template-Inhalt gescannt nach CSS-Klassen:';
 $_lang['tailwindhelper.scan_tvs'] = 'Template-Variablen-Inhalt gescannt nach CSS-Klassen:';

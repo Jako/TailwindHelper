@@ -5,7 +5,7 @@ MODX Helper for Tailwind.
 ### Requirements
 
 * MODX Revolution 2.8+
-* PHP v7.2+
+* PHP 7.2+
 
 ### Features
 

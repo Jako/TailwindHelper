@@ -8,11 +8,9 @@
   transition: opacity 0.5s;
   margin-top: 20px;
 }
-
 .x-window .treehillstudio_about:hover {
   opacity: 1;
 }
-
 .x-window .treehillstudio_about .x-panel-body {
   text-align: right;
 }
@@ -21,7 +19,6 @@
   color: #b2bf28;
   text-decoration: none;
 }
-
 .treehillstudio_window a:hover {
   color: #77801a;
 }

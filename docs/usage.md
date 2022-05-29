@@ -18,7 +18,9 @@ TailwindHelper uses the following system settings in the namespace
 
 Key | Description | Default
 ----|-------------|--------
-tailwindhelper.safelistFolder | The location of the safelist.json | `{core_path}components/tailwindhelper/elements/purge/`
+tailwindhelper.debug | Log debug information in the MODX error log. | No
+tailwindhelper.removeModxTags | Remove remaining MODX tags in the safelist.json. | Yes
+tailwindhelper.safelistFolder | The location of the safelist.json. | `{core_path}components/tailwindhelper/elements/purge/`
 
 ## Example usage 
 
@@ -30,6 +32,9 @@ the size of the build:
 
 ```
 const safelist = require('./path-to-your-core/core/components/tailwindhelper/elements/purge/safelist.json');
+safelist = safelist.concat([
+    'additional-class'
+]);
 
 module.exports = {
     ...
@@ -37,5 +42,22 @@ module.exports = {
         content: ['./src/**/*.html'],
         safelist: safelist
     },
+    ...
+```
+
+In Tailwind 3 purgeCSS is not used anymore and you have to reference the safelist.json directly in a safelist configuration:
+
+```
+const safelist = require('./path-to-your-core/core/components/tailwindhelper/elements/purge/safelist.json');
+safelist = safelist.concat([
+    'additional-class'
+]);
+
+module.exports = {
+    ...
+    content: {
+        content: ['./src/**/*.html'],
+    },
+    safelist: safelist
     ...
 ```
