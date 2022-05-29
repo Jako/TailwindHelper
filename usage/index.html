@@ -470,8 +470,18 @@ the list as individual classes.</p>
 </thead>
 <tbody>
 <tr>
+<td>tailwindhelper.debug</td>
+<td>Log debug information in the MODX error log.</td>
+<td>No</td>
+</tr>
+<tr>
+<td>tailwindhelper.removeModxTags</td>
+<td>Remove remaining MODX tags in the safelist.json.</td>
+<td>Yes</td>
+</tr>
+<tr>
 <td>tailwindhelper.safelistFolder</td>
-<td>The location of the safelist.json</td>
+<td>The location of the safelist.json.</td>
 <td><code>{core_path}components/tailwindhelper/elements/purge/</code></td>
 </tr>
 </tbody>
@@ -482,6 +492,9 @@ the list as individual classes.</p>
 you have to refer the created <code>safelist.json</code> in the <code>tailwind.config.js</code> to reduce
 the size of the build:</p>
 <div class="highlight"><pre><span></span><code>const safelist = require(&#39;./path-to-your-core/core/components/tailwindhelper/elements/purge/safelist.json&#39;);
+safelist = safelist.concat([
+    &#39;additional-class&#39;
+]);
 
 module.exports = {
     ...
@@ -489,6 +502,20 @@ module.exports = {
         content: [&#39;./src/**/*.html&#39;],
         safelist: safelist
     },
+    ...
+</code></pre></div>
+<p>In Tailwind 3 purgeCSS is not used anymore and you have to reference the safelist.json directly in a safelist configuration:</p>
+<div class="highlight"><pre><span></span><code>const safelist = require(&#39;./path-to-your-core/core/components/tailwindhelper/elements/purge/safelist.json&#39;);
+safelist = safelist.concat([
+    &#39;additional-class&#39;
+]);
+
+module.exports = {
+    ...
+    content: {
+        content: [&#39;./src/**/*.html&#39;],
+    },
+    safelist: safelist
     ...
 </code></pre></div>
                 
@@ -547,7 +574,7 @@ module.exports = {
       <div class="md-footer-copyright">
         
           <div class="md-footer-copyright__highlight">
-            &copy; 2021 <a href="https://treehillstudio.com">Treehill Studio</a>
+            &copy; 2021-2022 <a href="https://treehillstudio.com">Treehill Studio</a>
           </div>
         
         Made with
