@@ -85,15 +85,17 @@ class TailwindHelper
             'connectorUrl' => $assetsUrl . 'connector.php'
         ], $options);
 
+        $lexicon = $this->modx->getService('lexicon', 'modLexicon');
+        $lexicon->load($this->namespace . ':default');
+
+        $this->packageName = $this->modx->lexicon('tailwindhelper');
+
         // Add default options
         $this->options = array_merge($this->options, [
             'debug' => (bool)$this->getOption('debug', $options, false),
             'modxversion' => $modxversion['version'],
             'safelistFolder' => $this->translatePath($this->getOption('safelistFolder', $options, '{core_path}components/tailwindclasses/elements/purge/')),
         ]);
-
-        $lexicon = $this->modx->getService('lexicon', 'modLexicon');
-        $lexicon->load($this->namespace . ':default');
     }
 
     /**
@@ -157,7 +159,7 @@ class TailwindHelper
                 foreach ($currentClasses as $k => $currentClass) {
                     if (strpos($currentClass, '[[+') === 0 || strpos($currentClass, '[[!+') === 0) {
                         $modifierClasses = [];
-                        preg_match_all('/(notempty|default|then|else)=`(?\'classlist\'.*?)`/mis', $currentClass, $modifierClasses);
+                        preg_match_all('/(ifnotempty|isnotempty|notempty!empty||default|ifempty|isempty|empty|then|else)=`(?\'classlist\'.*?)`/mis', $currentClass, $modifierClasses);
                         if (!empty($modifierClasses['classlist'])) {
                             foreach ($modifierClasses['classlist'] as $currentModifierClasses) {
                                 $currentModifierClasses = explode(' ', $currentModifierClasses);
