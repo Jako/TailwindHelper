@@ -39,7 +39,7 @@ class TailwindHelper
      * The version
      * @var string $version
      */
-    public $version = '1.0.6';
+    public $version = '1.0.7';
 
     /**
      * The class options

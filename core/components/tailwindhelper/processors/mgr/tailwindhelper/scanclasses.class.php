@@ -18,12 +18,16 @@ class TailwindHelperScanClassesProcessor extends Processor
      */
     function process()
     {
+        $this->modx->addPackage('contentblocks', $this->modx->getOption('contentblocks.core_path', null, $this->modx->getOption('core_path') . 'components/contentblocks/') . 'model/');
+
         $classes = [];
 
         $classes = array_merge($classes, $this->getTypeClasses('modChunk', 'content', $this->modx->lexicon('tailwindhelper.scan_chunks')));
         $classes = array_merge($classes, $this->getTypeClasses('modTemplate', 'content', $this->modx->lexicon('tailwindhelper.scan_templates')));
         $classes = array_merge($classes, $this->getTypeClasses('modResource', 'content', $this->modx->lexicon('tailwindhelper.scan_resources')));
         $classes = array_merge($classes, $this->getTypeClasses('modTemplateVarResource', 'value', $this->modx->lexicon('tailwindhelper.scan_tvs')));
+        $classes = array_merge($classes, $this->getTypeClasses('cbField', 'template', $this->modx->lexicon('tailwindhelper.scan_cb_field')));
+        $classes = array_merge($classes, $this->getTypeClasses('cbLayout', 'template', $this->modx->lexicon('tailwindhelper.scan_cb_layout')));
 
         $classes = array_unique(array_filter($classes));
         sort($classes);

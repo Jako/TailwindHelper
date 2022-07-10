@@ -8,6 +8,8 @@
 $_lang['tailwindhelper'] = 'TailwindHelper';
 $_lang['tailwindhelper.menu'] = 'TailwindHelper';
 $_lang['tailwindhelper.menu_desc'] = 'Tailwind Safelist aktualisieren';
+$_lang['tailwindhelper.scan_cb_field'] = 'ContentBlocks-Feld-Templates gescannt nach CSS-Klassen:';
+$_lang['tailwindhelper.scan_cb_layout'] = 'ContentBlocks-Layout-Templates gescannt nach CSS-Klassen:';
 $_lang['tailwindhelper.scan_chunks'] = 'Chunk-Inhalt gescannt nach CSS-Klassen:';
 $_lang['tailwindhelper.scan_found'] = 'Insgesamt [[+count]] CSS-Klassen gefunden.';
 $_lang['tailwindhelper.scan_resources'] = 'Ressourcen-Inhalt gescannt nach CSS-Klassen:';
