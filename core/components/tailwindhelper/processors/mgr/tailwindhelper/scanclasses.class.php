@@ -38,7 +38,7 @@ class TailwindHelperScanClassesProcessor extends Processor
                 return $this->failure($message);
             }
         }
-        $this->modx->cacheManager->writeFile($path . 'safelist.json', json_encode($classes, JSON_PRETTY_PRINT));
+        $this->modx->cacheManager->writeFile($path . 'safelist.json', json_encode($classes, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
         $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_result'));
         $this->modx->log(xPDO::LOG_LEVEL_INFO, $path);
