@@ -155,7 +155,7 @@ class TailwindHelper
         }
         foreach ($contentClasses['classlist'] as $currentClasses) {
             if (!empty(trim($currentClasses))) {
-                $currentClasses = explode(' ', $currentClasses);
+                $currentClasses = preg_split("/\s+/", $currentClasses);
                 foreach ($currentClasses as $k => $currentClass) {
                     if (strpos($currentClass, '[[+') === 0 || strpos($currentClass, '[[!+') === 0) {
                         $modifierClasses = [];
