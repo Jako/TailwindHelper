@@ -158,17 +158,11 @@ class TailwindHelper
                 $currentClasses = preg_split("/\s+/", $currentClasses);
                 foreach ($currentClasses as $k => $currentClass) {
                     if (strpos($currentClass, '[[+') === 0 || strpos($currentClass, '[[!+') === 0) {
-                        $modifierClasses = [];
-                        preg_match_all('/(ifnotempty|isnotempty|notempty!empty||default|ifempty|isempty|empty|then|else)=`(?\'classlist\'.*?)`/mis', $currentClass, $modifierClasses);
-                        if (!empty($modifierClasses['classlist'])) {
-                            foreach ($modifierClasses['classlist'] as $currentModifierClasses) {
-                                $currentModifierClasses = explode(' ', $currentModifierClasses);
-                                if (!empty($currentModifierClasses)) {
-                                    $classes = array_merge($classes, $currentModifierClasses);
-                                    unset($currentClasses[$k]);
-                                }
-                            }
-                        }
+                        $currentClasses = $this->handleModifierClasses($currentClasses, $k);
+                    } elseif (strpos($currentClass, '&') === 0) {
+                        $currentClasses = $this->handleIfClasses($currentClasses, $k);
+                    } else {
+                        $currentClasses[$k] = trim($currentClass, '`');
                     }
                 }
                 $classes = array_merge($classes, $currentClasses);
@@ -179,6 +173,45 @@ class TailwindHelper
         $classes = array_filter($classes, [$this, 'filterModxTags']);
 
         return $classes;
+    }
+
+    /**
+     * Handle 'modifier' classes like [[+placeholder:notempty=`class`]]
+     *
+     * @param array $currentClasses
+     * @param int $k
+     * @return array
+     */
+    private function handleModifierClasses($currentClasses, $k)
+    {
+        $modifierClasses = [];
+        preg_match_all('/(ifnotempty|isnotempty|notempty|!empty|default|ifempty|isempty|empty|then|else)=`(?\'classlist\'.*?)`/mis', $currentClasses[$k], $modifierClasses);
+        if (!empty($modifierClasses['classlist'])) {
+            foreach ($modifierClasses['classlist'] as $currentModifierClasses) {
+                $currentModifierClasses = explode(' ', $currentModifierClasses);
+                if (!empty($currentModifierClasses)) {
+                    $currentClasses[$k] = '';
+                    $currentClasses = array_merge($currentClasses, $currentModifierClasses);
+                }
+            }
+        }
+        return $currentClasses;
+    }
+
+    /**
+     * @param array $currentClasses
+     * @param int $k
+     * @return array
+     */
+    private function handleIfClasses($currentClasses, $k)
+    {
+        $ifClasses = [];
+        preg_match_all('/(&else|&then)=`(?\'classlist\'.*?)$/mis', $currentClasses[$k], $ifClasses);
+        $currentClasses[$k] = '';
+        if (!empty($ifClasses['classlist'])) {
+            $currentClasses = array_merge($currentClasses, $ifClasses['classlist']);
+        }
+        return $currentClasses;
     }
 
     /**
@@ -216,12 +249,20 @@ class TailwindHelper
         return $classes;
     }
 
-    private function filterEmpty($var)
+    /**
+     * @param mixed $var
+     * @return bool
+     */
+    private function filterEmpty($var): bool
     {
         return ($var !== null && $var !== false && $var !== "");
     }
 
-    private function filterModxTags($var)
+    /**
+     * @param mixed $var
+     * @return bool
+     */
+    private function filterModxTags($var): bool
     {
         if ($this->getOption('removeModxTags')) {
             return (strpos($var, '[[') === false && strpos($var, ']]') === false);
