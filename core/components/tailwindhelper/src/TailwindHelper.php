@@ -39,7 +39,7 @@ class TailwindHelper
      * The version
      * @var string $version
      */
-    public $version = '1.0.7';
+    public $version = '1.0.8';
 
     /**
      * The class options
@@ -225,18 +225,30 @@ class TailwindHelper
         $classes = [];
         $contentClasses = [];
 
+        // detect :class="classlist" attributes
         preg_match_all('/ :class=([\'"])(?\'classlist\'.*?)\1/mis', $content, $contentClasses);
-        if (empty($contentClasses['classlist'])) {
-            return [];
-        }
-        foreach ($contentClasses['classlist'] as $currentClasses) {
-            $alpineClasses = [];
-            preg_match_all('/\'(?\'classlist\'.*?)\'/ms', $currentClasses, $alpineClasses);
-            if (empty($alpineClasses['classlist'])) {
-                continue;
+        if (!empty($contentClasses['classlist'])) {
+            foreach ($contentClasses['classlist'] as $currentClasses) {
+                $alpineClasses = [];
+                preg_match_all('/\'(?\'classlist\'.*?)\'/ms', $currentClasses, $alpineClasses);
+                if (empty($alpineClasses['classlist'])) {
+                    continue;
+                }
+                foreach ($alpineClasses['classlist'] as $currentAlpineClasses) {
+                    $currentAlpineClasses = explode(' ', $currentAlpineClasses);
+                    if (!empty($currentAlpineClasses)) {
+                        $classes = array_merge($classes, $currentAlpineClasses);
+                    }
+                }
             }
-            foreach ($alpineClasses['classlist'] as $currentAlpineClasses) {
-                $currentAlpineClasses = explode(' ', $currentAlpineClasses);
+        }
+
+        // detect x-transition:event="classlist" attributes
+        preg_match_all('/ x-transition:.*?=([\'"])(?\'classlist\'.*?)\1/mis', $content, $contentClasses);
+        if (!empty($contentClasses['classlist'])) {
+            foreach ($contentClasses['classlist'] as $currentClasses) {
+                $alpineClasses = [];
+                $currentAlpineClasses = explode(' ', $currentClasses);
                 if (!empty($currentAlpineClasses)) {
                     $classes = array_merge($classes, $currentAlpineClasses);
                 }
