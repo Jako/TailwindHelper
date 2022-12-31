@@ -1,6 +1,6 @@
 <?php
 /**
- * Create a Feed
+ * Scan classes
  *
  * @package tailwindhelper
  * @subpackage processors
