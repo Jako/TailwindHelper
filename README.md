@@ -1,4 +1,4 @@
-[![Default Lexicon](https://hosted.weblate.org/widgets/modx-extras/-/modx-tailwindhelper-standard/svg-badge.svg)](https://hosted.weblate.org/projects/modx-extras/modx-tailwindhelper-standard/)
+[![Default Lexicon](https://hosted.weblate.org/widgets/modx-extras/tailwindhelper/standard/svg-badge.svg)](https://hosted.weblate.org/projects/modx-extras/tailwindhelper/standard/)
 
 # TailwindHelper
 
@@ -27,4 +27,4 @@ The project is licensed under the [GPLv2 license](https://github.com/Jako/Tailwi
 
 ## Translations
 
-Translations of the package can be made for the [Default Lexicon](https://hosted.weblate.org/projects/modx-extras/modx-tailwindhelper-standard/) and the [System Setting Lexicon](https://hosted.weblate.org/projects/modx-extras/modx-tailwindhelper-system-settings/)
+Translations of the package can be made for the [Default Lexicon](https://hosted.weblate.org/projects/modx-extras/tailwindhelper/standard/) and the [System Setting Lexicon](https://hosted.weblate.org/projects/modx-extras/tailwindhelper/system-settings/)
