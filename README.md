@@ -1,4 +1,4 @@
-[![Default Lexicon](https://hosted.weblate.org/widgets/modx-extras/tailwindhelper/standard/svg-badge.svg)](https://hosted.weblate.org/projects/modx-extras/tailwindhelper/standard/)
+[![Default Lexicon](https://hosted.weblate.org/widget/modx-extras/tailwindhelper/standard/svg-badge.svg)](https://hosted.weblate.org/projects/modx-extras/tailwindhelper/standard/)
 
 # TailwindHelper
 
