@@ -2,7 +2,7 @@
 /**
  * TailwindHelper
  *
- * Copyright 2021-2022 by Thomas Jakobi <office@treehillstudio.com>
+ * Copyright 2021-2024 by Thomas Jakobi <office@treehillstudio.com>
  *
  * @package tailwindhelper
  * @subpackage classfile
@@ -39,7 +39,7 @@ class TailwindHelper
      * The version
      * @var string $version
      */
-    public $version = '1.0.8';
+    public $version = '1.0.9';
 
     /**
      * The class options

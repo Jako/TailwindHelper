@@ -18,7 +18,11 @@ class TailwindHelperScanClassesProcessor extends Processor
      */
     function process()
     {
-        $this->modx->addPackage('contentblocks', $this->modx->getOption('contentblocks.core_path', null, $this->modx->getOption('core_path') . 'components/contentblocks/') . 'model/');
+        $cbPath = $this->modx->getOption('contentblocks.core_path', null, $this->modx->getOption('core_path') . 'components/contentblocks/') . 'model/';
+
+        if (file_exists($cbPath)) {
+            $this->modx->addPackage('contentblocks', $cbPath);
+        }
 
         $classes = [];
 
@@ -26,8 +30,11 @@ class TailwindHelperScanClassesProcessor extends Processor
         $classes = array_merge($classes, $this->getTypeClasses('modTemplate', 'content', $this->modx->lexicon('tailwindhelper.scan_templates')));
         $classes = array_merge($classes, $this->getTypeClasses('modResource', 'content', $this->modx->lexicon('tailwindhelper.scan_resources')));
         $classes = array_merge($classes, $this->getTypeClasses('modTemplateVarResource', 'value', $this->modx->lexicon('tailwindhelper.scan_tvs')));
-        $classes = array_merge($classes, $this->getTypeClasses('cbField', 'template', $this->modx->lexicon('tailwindhelper.scan_cb_field')));
-        $classes = array_merge($classes, $this->getTypeClasses('cbLayout', 'template', $this->modx->lexicon('tailwindhelper.scan_cb_layout')));
+
+        if (file_exists($cbPath)) {
+            $classes = array_merge($classes, $this->getTypeClasses('cbField', 'template', $this->modx->lexicon('tailwindhelper.scan_cb_field')));
+            $classes = array_merge($classes, $this->getTypeClasses('cbLayout', 'template', $this->modx->lexicon('tailwindhelper.scan_cb_layout')));
+        }
 
         $classes = array_unique(array_filter($classes));
         sort($classes);
@@ -65,7 +72,7 @@ class TailwindHelperScanClassesProcessor extends Processor
             $classes = array_merge($classes, $this->tailwindhelper->getDefaultClasses($objectContent));
             $classes = array_merge($classes, $this->tailwindhelper->getAlpineClasses($objectContent));
         }
-        $this->modx->log(xPDO::LOG_LEVEL_INFO,  $message);
+        $this->modx->log(xPDO::LOG_LEVEL_INFO, $message);
         $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_found', ['count' => count($classes)]));
 
         return $classes;
