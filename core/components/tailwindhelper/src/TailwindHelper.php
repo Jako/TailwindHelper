@@ -235,7 +235,7 @@ class TailwindHelper
                     continue;
                 }
                 foreach ($alpineClasses['classlist'] as $currentAlpineClasses) {
-                    $currentAlpineClasses = explode(' ', $currentAlpineClasses);
+                    $currentAlpineClasses = ($currentAlpineClasses) ? explode(' ', $currentAlpineClasses) : [];
                     if (!empty($currentAlpineClasses)) {
                         $classes = array_merge($classes, $currentAlpineClasses);
                     }
@@ -247,8 +247,7 @@ class TailwindHelper
         preg_match_all('/ x-transition:.*?=([\'"])(?\'classlist\'.*?)\1/mis', $content, $contentClasses);
         if (!empty($contentClasses['classlist'])) {
             foreach ($contentClasses['classlist'] as $currentClasses) {
-                $alpineClasses = [];
-                $currentAlpineClasses = explode(' ', $currentClasses);
+                $currentAlpineClasses = ($currentClasses) ? explode(' ', $currentClasses) : [];
                 if (!empty($currentAlpineClasses)) {
                     $classes = array_merge($classes, $currentAlpineClasses);
                 }
