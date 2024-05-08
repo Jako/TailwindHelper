@@ -69,6 +69,10 @@ class TailwindHelperScanClassesProcessor extends Processor
         foreach ($objects as $object) {
             $objectContent = $object->get($keyName);
 
+            if (in_array($className, ['cbField', 'cbLayout'])) {
+                $objectContent = $this->getBoundContent($objectContent);
+            }
+
             $classes = array_merge($classes, $this->tailwindhelper->getDefaultClasses($objectContent));
             $classes = array_merge($classes, $this->tailwindhelper->getAlpineClasses($objectContent));
         }
@@ -76,6 +80,52 @@ class TailwindHelperScanClassesProcessor extends Processor
         $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_found', ['count' => count($classes)]));
 
         return $classes;
+    }
+
+    /**
+     * @param string $objectContent
+     * @return string
+     */
+    private function getBoundContent($objectContent)
+    {
+        $validTypes = ['@FILE', '@PDO_FILE'];
+        $type = '';
+        if (strpos($objectContent, '@') === 0) {
+            $endPos = strpos($objectContent, ' ');
+            if ($endPos > 2 && $endPos < 10) {
+                $tt = substr($objectContent, 0, $endPos);
+                if (in_array($tt, $validTypes)) {
+                    $type = $tt;
+                    $value = substr($objectContent, $endPos + 1);
+                }
+            }
+        }
+        if (!empty($type)) {
+            switch ($type) {
+                case '@FILE':
+                    $source = modMediaSource::getDefaultSource($this->modx, $this->modx->getOption('contentblocks.file_template_source'), false);
+                    if ($source && $source->getWorkingContext()) {
+                        $source->initialize();
+                        $path = $source->getBasePath($this->modx->getOption('contentblocks.file_template_path') . $value);
+                        if (file_exists($path)) {
+                            $value = file_get_contents($path);
+                        } else {
+                            $this->modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not read file: ' . $path);
+                        }
+                    } else {
+                        $this->modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not initialize media source: ' . $this->modx->getOption('contentblocks.file_template_source'));
+                    }
+                case '@PDO_FILE':
+                    $path = $this->modx->getOption('pdotools_elements_path') . $value;
+                    if (file_exists($path)) {
+                        $value = file_get_contents($path);
+                    } else {
+                        $this->modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not read file: ' . $path);
+                    }
+                    break;
+            }
+        }
+        return $value;
     }
 }
 

@@ -39,7 +39,7 @@ class TailwindHelper
      * The version
      * @var string $version
      */
-    public $version = '1.0.9';
+    public $version = '1.0.10';
 
     /**
      * The class options
@@ -155,7 +155,7 @@ class TailwindHelper
         }
         foreach ($contentClasses['classlist'] as $currentClasses) {
             if (!empty(trim($currentClasses))) {
-                $currentClasses = preg_split("/\s+/", $currentClasses);
+                $currentClasses = preg_split('/\s+/', $currentClasses);
                 foreach ($currentClasses as $k => $currentClass) {
                     if (strpos($currentClass, '[[+') === 0 || strpos($currentClass, '[[!+') === 0) {
                         $currentClasses = $this->handleModifierClasses($currentClasses, $k);
@@ -266,7 +266,7 @@ class TailwindHelper
      */
     private function filterEmpty($var): bool
     {
-        return ($var !== null && $var !== false && $var !== "");
+        return ($var !== null && $var !== false && $var !== '');
     }
 
     /**

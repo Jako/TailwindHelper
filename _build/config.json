@@ -3,7 +3,7 @@
   "lowCaseName": "tailwindhelper",
   "description": "MODX Helper for Tailwind",
   "author": "Thomas Jakobi",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "package": {
     "menus": [
       {
