@@ -1,3 +1,5 @@
+@use "sass:color";
+
 $treehillstudio-color: #cbd842;
 $red: #be0000;
 $primary: #00948e;
@@ -23,10 +25,10 @@ $primary: #00948e;
 
 .treehillstudio_window {
   a {
-    color: darken($treehillstudio-color, 10);
+    color: color.adjust($treehillstudio-color, $lightness: -10%);
     text-decoration: none;
     &:hover {
-      color: darken($treehillstudio-color, 25);
+      color: color.adjust($treehillstudio-color, $lightness: -25%);
     }
   }
 }
