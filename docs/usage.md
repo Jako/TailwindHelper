@@ -30,7 +30,7 @@ If you want to purge your tailwind css with [Parcel 2](https://parceljs.org/) or
 you have to refer the created `safelist.json` in the `tailwind.config.js` to reduce
 the size of the build:
 
-```
+```js
 const safelist = require('./path-to-your-core/core/components/tailwindhelper/elements/purge/safelist.json');
 safelist = safelist.concat([
     'additional-class'
@@ -47,7 +47,7 @@ module.exports = {
 
 In Tailwind 3 purgeCSS is not used anymore and you have to reference the safelist.json directly in a safelist configuration:
 
-```
+```js
 const safelist = require('./path-to-your-core/core/components/tailwindhelper/elements/purge/safelist.json');
 safelist = safelist.concat([
     'additional-class'
