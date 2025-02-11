@@ -524,6 +524,7 @@ the list as individual classes.</p>
 <thead>
 <tr>
 <th>Key</th>
+<th>Name</th>
 <th>Description</th>
 <th>Default</th>
 </tr>
@@ -531,16 +532,25 @@ the list as individual classes.</p>
 <tbody>
 <tr>
 <td>tailwindhelper.debug</td>
+<td>Debug</td>
 <td>Log debug information in the MODX error log.</td>
 <td>No</td>
 </tr>
 <tr>
+<td>tailwindhelper.filepaths</td>
+<td>File Paths</td>
+<td>Comma-separated list of file paths that are recursively searched for files with the mimetype text/plain or text/html. The content of these files is searched for CSS classes for safelist.json.</td>
+<td>-</td>
+</tr>
+<tr>
 <td>tailwindhelper.removeModxTags</td>
+<td>Remove MODX Tags</td>
 <td>Remove remaining MODX tags in the safelist.json.</td>
 <td>Yes</td>
 </tr>
 <tr>
 <td>tailwindhelper.safelistFolder</td>
+<td>Safelist Folder</td>
 <td>The location of the safelist.json.</td>
 <td><code>{core_path}components/tailwindhelper/elements/purge/</code></td>
 </tr>
@@ -551,32 +561,32 @@ the list as individual classes.</p>
 <p>If you want to purge your tailwind css with <a href="https://parceljs.org/">Parcel 2</a> or in <a href="https://webpack.js.org/">Webpack</a>,
 you have to refer the created <code>safelist.json</code> in the <code>tailwind.config.js</code> to reduce
 the size of the build:</p>
-<div class="highlight"><pre><span></span><code>const safelist = require(&#39;./path-to-your-core/core/components/tailwindhelper/elements/purge/safelist.json&#39;);
-safelist = safelist.concat([
-    &#39;additional-class&#39;
-]);
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">safelist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./path-to-your-core/core/components/tailwindhelper/elements/purge/safelist.json&#39;</span><span class="p">);</span>
+<span class="nx">safelist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">safelist</span><span class="p">.</span><span class="nx">concat</span><span class="p">([</span>
+<span class="w">    </span><span class="s1">&#39;additional-class&#39;</span>
+<span class="p">]);</span>
 
-module.exports = {
-    ...
-    purge: {
-        content: [&#39;./src/**/*.html&#39;],
-        safelist: safelist
-    },
-    ...
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">...</span>
+<span class="w">    </span><span class="nx">purge</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;./src/**/*.html&#39;</span><span class="p">],</span>
+<span class="w">        </span><span class="nx">safelist</span><span class="o">:</span><span class="w"> </span><span class="nx">safelist</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">...</span>
 </code></pre></div>
 <p>In Tailwind 3 purgeCSS is not used anymore and you have to reference the safelist.json directly in a safelist configuration:</p>
-<div class="highlight"><pre><span></span><code>const safelist = require(&#39;./path-to-your-core/core/components/tailwindhelper/elements/purge/safelist.json&#39;);
-safelist = safelist.concat([
-    &#39;additional-class&#39;
-]);
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">safelist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./path-to-your-core/core/components/tailwindhelper/elements/purge/safelist.json&#39;</span><span class="p">);</span>
+<span class="nx">safelist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">safelist</span><span class="p">.</span><span class="nx">concat</span><span class="p">([</span>
+<span class="w">    </span><span class="s1">&#39;additional-class&#39;</span>
+<span class="p">]);</span>
 
-module.exports = {
-    ...
-    content: {
-        content: [&#39;./src/**/*.html&#39;],
-    },
-    safelist: safelist
-    ...
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">...</span>
+<span class="w">    </span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;./src/**/*.html&#39;</span><span class="p">],</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">safelist</span><span class="o">:</span><span class="w"> </span><span class="nx">safelist</span>
+<span class="w">    </span><span class="p">...</span>
 </code></pre></div>
 
 
@@ -609,7 +619,7 @@ module.exports = {
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      &copy; 2021-2024 <a href="https://treehillstudio.com">Treehill Studio</a>
+      &copy; 2021-2025 <a href="https://treehillstudio.com">Treehill Studio</a>
     </div>
   
   
