@@ -19,6 +19,7 @@ class TailwindHelperScanClassesProcessor extends Processor
     function process()
     {
         $cbPath = $this->modx->getOption('contentblocks.core_path', null, $this->modx->getOption('core_path') . 'components/contentblocks/') . 'model/';
+        $filePaths = $this->tailwindhelper->getOption('filepaths') ? explode(',', $this->tailwindhelper->getOption('filepaths')) : [];
 
         if (file_exists($cbPath)) {
             $this->modx->addPackage('contentblocks', $cbPath);
@@ -35,6 +36,8 @@ class TailwindHelperScanClassesProcessor extends Processor
             $classes = array_merge($classes, $this->getTypeClasses('cbField', 'template', $this->modx->lexicon('tailwindhelper.scan_cb_field')));
             $classes = array_merge($classes, $this->getTypeClasses('cbLayout', 'template', $this->modx->lexicon('tailwindhelper.scan_cb_layout')));
         }
+
+        $classes = array_merge($classes, $this->getFileClasses($filePaths, $this->modx->lexicon('tailwindhelper.scan_files')));
 
         $classes = array_unique(array_filter($classes));
         sort($classes);
@@ -76,6 +79,44 @@ class TailwindHelperScanClassesProcessor extends Processor
             $classes = array_merge($classes, $this->tailwindhelper->getDefaultClasses($objectContent));
             $classes = array_merge($classes, $this->tailwindhelper->getAlpineClasses($objectContent));
         }
+        $this->modx->log(xPDO::LOG_LEVEL_INFO, $message);
+        $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_found', ['count' => count($classes)]));
+
+        return $classes;
+    }
+
+    /**
+     * @param string[] $paths
+     * @param string $message
+     * @return array
+     */
+    private function getFileClasses($paths, $message)
+    {
+        $classes = [];
+
+        foreach ($paths as $path) {
+            try {
+                $dirIterator = new \RecursiveDirectoryIterator($path);
+                /** @var \RecursiveDirectoryIterator | \RecursiveIteratorIterator $it */
+                $it = new \RecursiveIteratorIterator($dirIterator);
+                while ($it->valid()) {
+                    if (!$it->isDot() && $it->isFile() && $it->isReadable()) {
+                        $file = $it->current();
+                        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                        $mime = finfo_file($finfo, $file->getPathname());
+                        if (in_array($mime, ['text/plain', 'text/html'])) {
+                            $fileContent = file_get_contents($file->getPathname());
+                            $classes = array_merge($classes, $this->tailwindhelper->getDefaultClasses($fileContent));
+                            $classes = array_merge($classes, $this->tailwindhelper->getAlpineClasses($fileContent));
+                            $this->modx->log(xPDO::LOG_LEVEL_INFO, $file->getPathname());
+                        }
+                    }
+                    $it->next();
+                }
+            } catch (\Exception $e) {
+            }
+        }
+
         $this->modx->log(xPDO::LOG_LEVEL_INFO, $message);
         $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_found', ['count' => count($classes)]));
 

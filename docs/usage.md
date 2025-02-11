@@ -16,11 +16,12 @@ the list as individual classes.
 TailwindHelper uses the following system settings in the namespace
 `tailwindhelper`:
 
-Key | Description | Default
-----|-------------|--------
-tailwindhelper.debug | Log debug information in the MODX error log. | No
-tailwindhelper.removeModxTags | Remove remaining MODX tags in the safelist.json. | Yes
-tailwindhelper.safelistFolder | The location of the safelist.json. | `{core_path}components/tailwindhelper/elements/purge/`
+| Key                           | Name             | Description                                                                                                                                                                                     | Default                                                |
+|-------------------------------|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------|
+| tailwindhelper.debug          | Debug            | Log debug information in the MODX error log.                                                                                                                                                    | No                                                     |
+| tailwindhelper.filepaths      | File Paths       | Comma-separated list of file paths that are recursively searched for files with the mimetype text/plain or text/html. The content of these files is searched for CSS classes for safelist.json. | -                                                      |
+| tailwindhelper.removeModxTags | Remove MODX Tags | Remove remaining MODX tags in the safelist.json.                                                                                                                                                | Yes                                                    |
+| tailwindhelper.safelistFolder | Safelist Folder  | The location of the safelist.json.                                                                                                                                                              | `{core_path}components/tailwindhelper/elements/purge/` |
 
 ## Example usage 
 

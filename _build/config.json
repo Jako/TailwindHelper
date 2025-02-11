@@ -3,7 +3,7 @@
   "lowCaseName": "tailwindhelper",
   "description": "MODX Helper for Tailwind",
   "author": "Thomas Jakobi",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "package": {
     "menus": [
       {
@@ -37,6 +37,11 @@
         "key": "safelistFolder",
         "area": "site",
         "value": "{core_path}components/tailwindhelper/elements/purge/"
+      },
+      {
+        "key": "filepaths",
+        "area": "site",
+        "value": ""
       },
       {
         "key": "removeModxTags",

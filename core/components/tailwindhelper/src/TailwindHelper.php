@@ -2,7 +2,7 @@
 /**
  * TailwindHelper
  *
- * Copyright 2021-2024 by Thomas Jakobi <office@treehillstudio.com>
+ * Copyright 2021-2025 by Thomas Jakobi <office@treehillstudio.com>
  *
  * @package tailwindhelper
  * @subpackage classfile
@@ -39,7 +39,7 @@ class TailwindHelper
      * The version
      * @var string $version
      */
-    public $version = '1.0.10';
+    public $version = '1.0.11';
 
     /**
      * The class options
@@ -95,6 +95,7 @@ class TailwindHelper
             'debug' => (bool)$this->getOption('debug', $options, false),
             'modxversion' => $modxversion['version'],
             'safelistFolder' => $this->translatePath($this->getOption('safelistFolder', $options, '{core_path}components/tailwindclasses/elements/purge/')),
+            'filepaths' => $this->translatePath($this->getOption('filepaths', $options, '')),
         ]);
     }
 
