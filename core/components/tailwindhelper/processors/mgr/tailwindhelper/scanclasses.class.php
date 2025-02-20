@@ -108,7 +108,6 @@ class TailwindHelperScanClassesProcessor extends Processor
                             $fileContent = file_get_contents($file->getPathname());
                             $classes = array_merge($classes, $this->tailwindhelper->getDefaultClasses($fileContent));
                             $classes = array_merge($classes, $this->tailwindhelper->getAlpineClasses($fileContent));
-                            $this->modx->log(xPDO::LOG_LEVEL_INFO, $file->getPathname());
                         }
                     }
                     $it->next();
@@ -131,6 +130,7 @@ class TailwindHelperScanClassesProcessor extends Processor
     {
         $validTypes = ['@FILE', '@PDO_FILE'];
         $type = '';
+        $value = '';
         if (strpos($objectContent, '@') === 0) {
             $endPos = strpos($objectContent, ' ');
             if ($endPos > 2 && $endPos < 10) {
