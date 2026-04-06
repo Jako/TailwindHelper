@@ -17,7 +17,7 @@ const gulp = require('gulp'),
 const banner = '/*!\n' +
     ' * <%= pkg.name %> - <%= pkg.description %>\n' +
     ' * Version: <%= pkg.version %>\n' +
-    ' * Build date: ' + format("yyyy-MM-dd", new Date()) + '\n' +
+    ' * Build date: ' + format('yyyy-MM-dd', new Date()) + '\n' +
     ' */';
 const year = new Date().getFullYear();
 
@@ -41,8 +41,8 @@ const scriptsMgr = function () {
     ])
         .pipe(concat('tailwindhelper.min.js'))
         .pipe(uglify())
-        .pipe(header(banner + '\n', {pkg: pkg}))
-        .pipe(gulp.dest('assets/components/tailwindhelper/js/mgr/'))
+        .pipe(header(banner + '\n', { pkg: pkg }))
+        .pipe(gulp.dest('assets/components/tailwindhelper/js/mgr/'));
 };
 gulp.task('scripts', gulp.series(scriptsMgr));
 
@@ -50,7 +50,8 @@ const sassMgr = function () {
     return gulp.src([
         'source/sass/mgr/tailwindhelper.scss'
     ])
-        .pipe(sass().on('error', sass.logError))
+        .pipe(sass()
+            .on('error', sass.logError))
         .pipe(postcss([
             autoprefixer()
         ]))
@@ -68,13 +69,13 @@ const sassMgr = function () {
         .pipe(rename({
             suffix: '.min'
         }))
-        .pipe(footer('\n' + banner, {pkg: pkg}))
-        .pipe(gulp.dest('assets/components/tailwindhelper/css/mgr/'))
+        .pipe(footer('\n' + banner, { pkg: pkg }))
+        .pipe(gulp.dest('assets/components/tailwindhelper/css/mgr/'));
 };
 gulp.task('sass', gulp.series(sassMgr));
 
 const imagesMgr = function () {
-    return gulp.src('./source/img/**/*.+(png|jpg|gif|svg)', {encoding: false})
+    return gulp.src('./source/img/**/*.+(png|jpg|gif|svg)', { encoding: false })
         .pipe(gulp.dest('assets/components/tailwindhelper/img/mgr/'));
 };
 gulp.task('images', gulp.series(imagesMgr));
@@ -83,28 +84,28 @@ const bumpCopyright = function () {
     return gulp.src([
         'core/components/tailwindhelper/model/tailwindhelper/tailwindhelper.class.php',
         'core/components/tailwindhelper/src/TailwindHelper.php',
-    ], {base: './'})
+    ], { base: './' })
         .pipe(replace(/Copyright 2021(-\d{4})? by/g, 'Copyright ' + (year > 2021 ? '2021-' : '') + year + ' by'))
         .pipe(gulp.dest('.'));
 };
 const bumpVersion = function () {
     return gulp.src([
         'core/components/tailwindhelper/src/TailwindHelper.php',
-    ], {base: './'})
+    ], { base: './' })
         .pipe(replace(/version = '\d+\.\d+\.\d+-?[0-9a-z]*'/ig, 'version = \'' + pkg.version + '\''))
         .pipe(gulp.dest('.'));
 };
 const bumpDocs = function () {
     return gulp.src([
-        'mkdocs.yml',
-    ], {base: './'})
+        'zensical.toml',
+    ], { base: './' })
         .pipe(replace(/&copy; 2021(-\d{4})?/g, '&copy; ' + (year > 2021 ? '2021-' : '') + year))
         .pipe(gulp.dest('.'));
 };
 const bumpRequirements = function () {
     return gulp.src([
         'docs/index.md',
-    ], {base: './'})
+    ], { base: './' })
         .pipe(replace(/[*-] MODX Revolution \d.\d.*/g, '* MODX Revolution ' + modxversion + '+'))
         .pipe(replace(/[*-] PHP (v)?\d.\d.*/g, '* PHP ' + phpversion + '+'))
         .pipe(gulp.dest('.'));
