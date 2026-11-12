@@ -133,33 +133,33 @@ async function taskBump() {
         'core/components/tailwindhelper/model/tailwindhelper/tailwindhelper.class.php',
         'core/components/tailwindhelper/src/TailwindHelper.php',
     ];
-    copyrightFiles.forEach(file => {
-        replaceInFile(file, [{
+    for (const file of copyrightFiles) {
+        await replaceInFile(file, [{
             search: copyrightRegex,
             replace: copyrightReplace
         }], 'copyright in');
-    });
-    replaceInFile('core/components/tailwindhelper/src/TailwindHelper.php', [{
+    }
+    await replaceInFile('core/components/tailwindhelper/src/TailwindHelper.php', [{
         search: /version = '\d+\.\d+\.\d+-?[0-9a-z]*'/ig,
         replace: `version = '${version}'`
     }], 'version in');
     const docFiles = [
         'zensical.toml',
     ];
-    docFiles.forEach(file => {
-        replaceInFile(file, [{
+    for (const file of docFiles) {
+        await replaceInFile(file, [{
             search: apiRegex,
             replace: apiReplace
         }], 'daterange in');
-    });
-    replaceInFile('docs/index.md', [{
+    }
+    await replaceInFile('docs/index.md', [{
         search: /[*-] MODX Revolution \d.\d.*/g,
         replace: '* MODX Revolution ' + modxversion + '+'
     }, {
         search: /[*-] PHP (v)?\d.\d.*/g,
         replace: '* PHP ' + phpversion + '+'
     }], 'requirements in');
-    replaceInFile('core/components/tailwindhelper/composer.json', [{
+    await replaceInFile('core/components/tailwindhelper/composer.json', [{
         search: /"php": "\d.\d.*?"/g,
         replace: '"php": "' + phpversion + '"'
     }, {
@@ -177,12 +177,12 @@ async function taskBump() {
         '_build/config.json',
         'core/components/tailwindhelper/composer.json',
     ];
-    buildFiles.forEach(file => {
-        replaceInFile(file, [{
+    for (const file of buildFiles) {
+        await replaceInFile(file, [{
             search: /"version": "\d+\.\d+\.\d+-?[0-9a-z]*"/ig,
             replace: `"version": "${version}"`
         }], 'version in');
-    });
+    }
 }
 
 async function taskScripts() {
