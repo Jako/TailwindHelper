@@ -1,7 +1,7 @@
 {
   "name": "treehillstudio/tailwindhelper",
   "description": "MODX Helper for Tailwind",
-  "version": "1.0.11",
+  "version": "1.1.0",
   "authors": [
     {
       "name": "Thomas Jakobi",
@@ -12,11 +12,11 @@
   "license": "GPL-2.0-or-later",
   "config": {
     "platform": {
-      "php": "7.2.5"
+      "php": "7.2"
     }
   },
   "require": {
-    "php": ">=7.2.5",
+    "php": ">=7.2",
     "ext-json": "*",
     "ext-fileinfo": "*"
   },

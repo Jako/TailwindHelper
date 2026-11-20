@@ -30,6 +30,12 @@ TailwindHelper.util.scanClasses = function () {
                     console.fireEvent('complete');
                 },
                 scope: this
+            },
+            failure: {
+                fn: function () {
+                    console.fireEvent('complete');
+                },
+                scope: this
             }
         }
     });
@@ -55,7 +61,7 @@ TailwindHelper.window.Console = function (config) {
                 afterrender: function () {
                     this.getEl().select('img').on('click', function () {
                         var msg = '<span style="display: inline-block; text-align: center"><img src="' + TailwindHelper.config.assetsUrl + 'img/mgr/treehill-studio.png" srcset="' + TailwindHelper.config.assetsUrl + 'img/mgr/treehill-studio@2x.png 2x" alt="Treehill Studio"><br>' +
-                            '&copy; 2021 by <a href="https://treehillstudio.com" target="_blank">treehillstudio.com</a></span>';
+                            '&copy; 2021-2026 by <a href="https://treehillstudio.com" target="_blank">treehillstudio.com</a></span>';
                         Ext.Msg.show({
                             title: _('tailwindhelper') + ' ' + TailwindHelper.config.version,
                             msg: msg,

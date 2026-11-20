@@ -10,13 +10,13 @@ MODX Helper for Tailwind.
 ### Features
 
 With this MODX Revolution extra all used CSS classes in chunks, templates,
-resources and template variables are collected and saved to a safelist.json
-file. This safelist can be used to avoid purging the used CSS classes in a MODX
-installation.
+resources, template variables, ContentBlocks templates and files in configurable
+folders are collected and saved to a safelist.json file. This safelist can be
+used to avoid purging the used CSS classes in a MODX installation.
 
 ### License
 
-The project is licensed under the [GPLv2 license](https://github.com/Jako/TailwindHelper/LICENSE.md).
+The project is licensed under the [GPLv2 license](https://github.com/Jako/TailwindHelper/blob/master/LICENSE.md).
 
 ### Translations [![Default Lexicon](https://hosted.weblate.org/widget/modx-extras/tailwindhelper/standard/svg-badge.svg)](https://hosted.weblate.org/projects/modx-extras/tailwindhelper/)
 

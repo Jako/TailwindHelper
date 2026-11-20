@@ -2,7 +2,7 @@
 /**
  * TailwindHelper Classfile
  *
- * Copyright 2021-2025 by Thomas Jakobi <office@treehillstudio.com>
+ * Copyright 2021-2026 by Thomas Jakobi <office@treehillstudio.com>
  *
  * @package tailwindhelper
  * @subpackage classfile

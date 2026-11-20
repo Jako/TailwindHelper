@@ -10,3 +10,5 @@ _packages/*.*
 node_modules/
 core/components/*/vendor/
 site/
+
+.phpunit.result.cache

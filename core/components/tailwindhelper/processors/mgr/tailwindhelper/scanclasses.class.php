@@ -7,10 +7,45 @@
  */
 
 use TreehillStudio\TailwindHelper\Processors\Processor;
+use TreehillStudio\TailwindHelper\Scanner\ContentResolver;
+use TreehillStudio\TailwindHelper\Scanner\FileReader;
+use TreehillStudio\TailwindHelper\Scanner\Safelist;
+use TreehillStudio\TailwindHelper\Scanner\SafelistException;
 
 class TailwindHelperScanClassesProcessor extends Processor
 {
     public $languageTopics = ['core:default', 'tailwindhelper:default'];
+    public $permission = 'settings';
+
+    /**
+     * The scanned MODX objects: the class, the scanned fields and the lexicon key of the console message
+     */
+    const SOURCES = [
+        ['modChunk', ['content'], 'tailwindhelper.scan_chunks'],
+        ['modTemplate', ['content'], 'tailwindhelper.scan_templates'],
+        ['modResource', ['content'], 'tailwindhelper.scan_resources'],
+        ['modTemplateVar', ['default_text'], 'tailwindhelper.scan_tv_defaults'],
+        ['modTemplateVarResource', ['value'], 'tailwindhelper.scan_tvs'],
+    ];
+
+    /**
+     * The scanned ContentBlocks objects. The input types like repeater, list
+     * or table store their additional templates in the field properties.
+     */
+    const CONTENTBLOCKS_SOURCES = [
+        ['cbField', ['template', 'wrapper_template', 'nested_template', 'row_template'], 'tailwindhelper.scan_cb_field'],
+        ['cbLayout', ['template'], 'tailwindhelper.scan_cb_layout'],
+    ];
+
+    /**
+     * @var FileReader $fileReader
+     */
+    private $fileReader;
+
+    /**
+     * @var ContentResolver $contentResolver
+     */
+    private $contentResolver;
 
     /**
      * {@inheritDoc}
@@ -18,155 +53,97 @@ class TailwindHelperScanClassesProcessor extends Processor
      */
     function process()
     {
-        $cbPath = $this->modx->getOption('contentblocks.core_path', null, $this->modx->getOption('core_path') . 'components/contentblocks/') . 'model/';
-        $filePaths = $this->tailwindhelper->getOption('filepaths') ? explode(',', $this->tailwindhelper->getOption('filepaths')) : [];
+        $this->fileReader = new FileReader($this->modx);
+        $this->contentResolver = new ContentResolver($this->modx, $this->tailwindhelper, $this->fileReader);
 
+        $sources = self::SOURCES;
+        $cbPath = $this->modx->getOption('contentblocks.core_path', null, $this->modx->getOption('core_path') . 'components/contentblocks/') . 'model/';
         if (file_exists($cbPath)) {
             $this->modx->addPackage('contentblocks', $cbPath);
+            $sources = array_merge($sources, self::CONTENTBLOCKS_SOURCES);
         }
 
         $classes = [];
-
-        $classes = array_merge($classes, $this->getTypeClasses('modChunk', 'content', $this->modx->lexicon('tailwindhelper.scan_chunks')));
-        $classes = array_merge($classes, $this->getTypeClasses('modTemplate', 'content', $this->modx->lexicon('tailwindhelper.scan_templates')));
-        $classes = array_merge($classes, $this->getTypeClasses('modResource', 'content', $this->modx->lexicon('tailwindhelper.scan_resources')));
-        $classes = array_merge($classes, $this->getTypeClasses('modTemplateVarResource', 'value', $this->modx->lexicon('tailwindhelper.scan_tvs')));
-
-        if (file_exists($cbPath)) {
-            $classes = array_merge($classes, $this->getTypeClasses('cbField', 'template', $this->modx->lexicon('tailwindhelper.scan_cb_field')));
-            $classes = array_merge($classes, $this->getTypeClasses('cbLayout', 'template', $this->modx->lexicon('tailwindhelper.scan_cb_layout')));
+        foreach ($sources as [$className, $keyNames, $lexiconKey]) {
+            $classes = array_merge($classes, $this->getObjectClasses($className, $keyNames, $lexiconKey));
         }
+        $folders = array_filter(array_map('trim', explode(',', (string)$this->tailwindhelper->getOption('filepaths'))));
+        $classes = array_merge($classes, $this->getFileClasses($folders, 'tailwindhelper.scan_files'));
 
-        $classes = array_merge($classes, $this->getFileClasses($filePaths, $this->modx->lexicon('tailwindhelper.scan_files')));
-
-        $classes = array_unique(array_filter($classes));
-        sort($classes);
-        $path = $this->tailwindhelper->getOption('safelistFolder');
-        if (!file_exists($path)) {
-            if (!$this->modx->cacheManager->writeTree($path)) {
-                $message = 'Could not create "' . $path . '"';
-                return $this->failure($message);
-            }
+        $safelist = new Safelist($this->modx);
+        try {
+            $classes = $safelist->prepare($classes);
+            $json = $safelist->encode($classes);
+            $folder = $safelist->write($this->tailwindhelper->getOption('safelistFolder'), $json);
+        } catch (SafelistException $e) {
+            $this->modx->log(xPDO::LOG_LEVEL_ERROR, $e->getMessage(), '', 'TailwindHelper');
+            return $this->failure($e->getMessage());
         }
-        $this->modx->cacheManager->writeFile($path . 'safelist.json', json_encode($classes, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
         $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_result'));
-        $this->modx->log(xPDO::LOG_LEVEL_INFO, $path);
+        $this->modx->log(xPDO::LOG_LEVEL_INFO, $folder);
 
-        sleep(1);
+        // Give the console window the time to show the log messages
+        if ($this->getProperty('register')) {
+            sleep(1);
+        }
 
-        return $this->success(json_encode($classes, JSON_PRETTY_PRINT));
+        return $this->success($json);
     }
 
     /**
+     * Get the classes in the fields of all objects of a class.
+     *
      * @param string $className
-     * @param string $keyName
-     * @param string $message
+     * @param string[] $keyNames
+     * @param string $lexiconKey
      * @return array
      */
-    private function getTypeClasses($className, $keyName, $message)
+    private function getObjectClasses(string $className, array $keyNames, string $lexiconKey): array
     {
         $classes = [];
-        /** @var xPDOObject[] $objects */
-        $objects = $this->modx->getIterator($className);
-        foreach ($objects as $object) {
-            $objectContent = $object->get($keyName);
-
-            if (in_array($className, ['cbField', 'cbLayout'])) {
-                $objectContent = $this->getBoundContent($objectContent);
+        foreach ($this->modx->getIterator($className) as $object) {
+            foreach ($keyNames as $keyName) {
+                $content = $this->contentResolver->getContent($object, $keyName);
+                if ($content !== '') {
+                    $classes = array_merge($classes, $this->tailwindhelper->getClasses($content));
+                }
             }
-
-            $classes = array_merge($classes, $this->tailwindhelper->getDefaultClasses($objectContent));
-            $classes = array_merge($classes, $this->tailwindhelper->getAlpineClasses($objectContent));
         }
-        $this->modx->log(xPDO::LOG_LEVEL_INFO, $message);
-        $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_found', ['count' => count($classes)]));
-
+        $this->logFound($lexiconKey, $classes);
         return $classes;
     }
 
     /**
-     * @param string[] $paths
-     * @param string $message
+     * Get the classes in the text files of folders.
+     *
+     * @param string[] $folders
+     * @param string $lexiconKey
      * @return array
      */
-    private function getFileClasses($paths, $message)
+    private function getFileClasses(array $folders, string $lexiconKey): array
     {
-        $classes = [];
-
-        foreach ($paths as $path) {
-            try {
-                $dirIterator = new \RecursiveDirectoryIterator($path);
-                /** @var \RecursiveDirectoryIterator | \RecursiveIteratorIterator $it */
-                $it = new \RecursiveIteratorIterator($dirIterator);
-                while ($it->valid()) {
-                    if (!$it->isDot() && $it->isFile() && $it->isReadable()) {
-                        $file = $it->current();
-                        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-                        $mime = finfo_file($finfo, $file->getPathname());
-                        if (in_array($mime, ['text/plain', 'text/html'])) {
-                            $fileContent = file_get_contents($file->getPathname());
-                            $classes = array_merge($classes, $this->tailwindhelper->getDefaultClasses($fileContent));
-                            $classes = array_merge($classes, $this->tailwindhelper->getAlpineClasses($fileContent));
-                        }
-                    }
-                    $it->next();
-                }
-            } catch (\Exception $e) {
-            }
+        if (empty($folders)) {
+            return [];
         }
-
-        $this->modx->log(xPDO::LOG_LEVEL_INFO, $message);
-        $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_found', ['count' => count($classes)]));
-
+        $classes = [];
+        foreach ($this->fileReader->getTextFiles($folders) as $content) {
+            $classes = array_merge($classes, $this->tailwindhelper->getClasses($content));
+        }
+        $this->logFound($lexiconKey, $classes);
         return $classes;
     }
 
     /**
-     * @param string $objectContent
-     * @return string
+     * Log the scanned source and the count of the unique classes found in it.
+     *
+     * @param string $lexiconKey
+     * @param array $classes
      */
-    private function getBoundContent($objectContent)
+    private function logFound(string $lexiconKey, array $classes)
     {
-        $validTypes = ['@FILE', '@PDO_FILE'];
-        $type = '';
-        $value = '';
-        if (strpos($objectContent, '@') === 0) {
-            $endPos = strpos($objectContent, ' ');
-            if ($endPos > 2 && $endPos < 10) {
-                $tt = substr($objectContent, 0, $endPos);
-                if (in_array($tt, $validTypes)) {
-                    $type = $tt;
-                    $value = substr($objectContent, $endPos + 1);
-                }
-            }
-        }
-        if (!empty($type)) {
-            switch ($type) {
-                case '@FILE':
-                    $source = modMediaSource::getDefaultSource($this->modx, $this->modx->getOption('contentblocks.file_template_source'), false);
-                    if ($source && $source->getWorkingContext()) {
-                        $source->initialize();
-                        $path = $source->getBasePath($this->modx->getOption('contentblocks.file_template_path') . $value);
-                        if (file_exists($path)) {
-                            $value = file_get_contents($path);
-                        } else {
-                            $this->modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not read file: ' . $path);
-                        }
-                    } else {
-                        $this->modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not initialize media source: ' . $this->modx->getOption('contentblocks.file_template_source'));
-                    }
-                case '@PDO_FILE':
-                    $path = $this->modx->getOption('pdotools_elements_path') . $value;
-                    if (file_exists($path)) {
-                        $value = file_get_contents($path);
-                    } else {
-                        $this->modx->log(xPDO::LOG_LEVEL_ERROR, 'Could not read file: ' . $path);
-                    }
-                    break;
-            }
-        }
-        return $value;
+        $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon($lexiconKey));
+        $this->modx->log(xPDO::LOG_LEVEL_INFO, $this->modx->lexicon('tailwindhelper.scan_found', ['count' => count(array_unique($classes))]));
     }
 }
 

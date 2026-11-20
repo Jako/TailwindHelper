@@ -7,7 +7,7 @@ MODX Helper for Tailwind
 
 ## Features
 
-- Write a safelist.json on base on chunk, template, resource and template variable content
+- Write a safelist.json on base on chunk, template, resource, template variable, ContentBlocks template and file content
 
 ## Installation
 

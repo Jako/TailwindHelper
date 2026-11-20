@@ -32,7 +32,9 @@ abstract class Processor extends modProcessor
         parent::__construct($modx, $properties);
 
         $corePath = $this->modx->getOption('tailwindhelper.core_path', null, $this->modx->getOption('core_path') . 'components/tailwindhelper/');
-        $this->tailwindhelper = $this->modx->getService('tailwindhelper', 'TailwindHelper', $corePath . 'model/tailwindhelper/');
+        $this->tailwindhelper = $this->modx->getService('tailwindhelper', 'TailwindHelper', $corePath . 'model/tailwindhelper/', [
+            'core_path' => $corePath
+        ]);
     }
 
     /**

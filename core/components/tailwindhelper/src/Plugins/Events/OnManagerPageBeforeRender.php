@@ -32,7 +32,7 @@ class OnManagerPageBeforeRender extends Plugin
             $this->modx->controller->addHtml(
                 '<script type="text/javascript">
                     Ext.onReady(function() {
-                        TailwindHelper.config = ' . json_encode($this->tailwindhelper->options, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . ';
+                        TailwindHelper.config = ' . json_encode($this->tailwindhelper->getManagerOptions(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . ';
                     });
                 </script>'
             );

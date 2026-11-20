@@ -2,7 +2,7 @@
 /**
  * TailwindHelper
  *
- * Copyright 2021-2025 by Thomas Jakobi <office@treehillstudio.com>
+ * Copyright 2021-2026 by Thomas Jakobi <office@treehillstudio.com>
  *
  * @package tailwindhelper
  * @subpackage classfile
@@ -11,6 +11,7 @@
 namespace TreehillStudio\TailwindHelper;
 
 use modX;
+use TreehillStudio\TailwindHelper\Parser\ClassParser;
 
 /**
  * Class TailwindHelper
@@ -39,7 +40,7 @@ class TailwindHelper
      * The version
      * @var string $version
      */
-    public $version = '1.0.11';
+    public $version = '1.1.0';
 
     /**
      * The class options
@@ -93,7 +94,7 @@ class TailwindHelper
         $this->options = array_merge($this->options, [
             'debug' => (bool)$this->getOption('debug', $options, false),
             'modxversion' => $modxversion['version'],
-            'safelistFolder' => $this->translatePath($this->getOption('safelistFolder', $options, '{core_path}components/tailwindclasses/elements/purge/')),
+            'safelistFolder' => $this->translatePath($this->getOption('safelistFolder', $options, '{core_path}components/tailwindhelper/elements/purge/')),
             'filepaths' => $this->translatePath($this->getOption('filepaths', $options, '')),
         ]);
     }
@@ -123,20 +124,45 @@ class TailwindHelper
     }
 
     /**
+     * Replace the {core_path}, {base_path} and {assets_path} placeholders
+     * and their [[+core_path]] forms in a path.
+     *
      * @param string $path
      * @return string
      */
     public function translatePath($path)
     {
-        return str_replace(array(
-            '{core_path}',
-            '{base_path}',
-            '{assets_path}',
-        ), array(
-            $this->modx->getOption('core_path', null, MODX_CORE_PATH),
-            $this->modx->getOption('base_path', null, MODX_BASE_PATH),
-            $this->modx->getOption('assets_path', null, MODX_ASSETS_PATH),
-        ), $path);
+        $paths = [
+            'core_path' => $this->modx->getOption('core_path', null, MODX_CORE_PATH),
+            'base_path' => $this->modx->getOption('base_path', null, MODX_BASE_PATH),
+            'assets_path' => $this->modx->getOption('assets_path', null, MODX_ASSETS_PATH),
+        ];
+        foreach ($paths as $key => $value) {
+            $path = str_replace(['{' . $key . '}', '[[+' . $key . ']]', '[[++' . $key . ']]'], $value, $path);
+        }
+        return $path;
+    }
+
+    /**
+     * Get the class parser with the current removeModxTags option.
+     *
+     * @return ClassParser
+     */
+    public function getParser(): ClassParser
+    {
+        return new ClassParser((bool)$this->getOption('removeModxTags'));
+    }
+
+    /**
+     * Get all classes in a string: in class attributes, in Alpine.js
+     * attributes and in class properties of MODX tags.
+     *
+     * @param string $content
+     * @return array
+     */
+    public function getClasses($content)
+    {
+        return $this->getParser()->getClasses($content);
     }
 
     /**
@@ -145,73 +171,9 @@ class TailwindHelper
      * @param string $content
      * @return array
      */
-    function getDefaultClasses($content)
+    public function getDefaultClasses($content)
     {
-        $classes = [];
-        $contentClasses = [];
-        preg_match_all('/ class=([\'"])(?\'classlist\'.*?)\1/mis', $content, $contentClasses);
-        if (empty($contentClasses['classlist'])) {
-            return [];
-        }
-        foreach ($contentClasses['classlist'] as $currentClasses) {
-            if (!empty(trim($currentClasses))) {
-                $currentClasses = preg_split('/\s+/', $currentClasses);
-                foreach ($currentClasses as $k => $currentClass) {
-                    if (strpos($currentClass, '[[+') === 0 || strpos($currentClass, '[[!+') === 0) {
-                        $currentClasses = $this->handleModifierClasses($currentClasses, $k);
-                    } elseif (strpos($currentClass, '&') === 0) {
-                        $currentClasses = $this->handleIfClasses($currentClasses, $k);
-                    } else {
-                        $currentClasses[$k] = trim($currentClass, '`');
-                    }
-                }
-                $classes = array_merge($classes, $currentClasses);
-            }
-        }
-
-        $classes = array_filter($classes, [$this, 'filterEmpty']);
-        $classes = array_filter($classes, [$this, 'filterModxTags']);
-
-        return $classes;
-    }
-
-    /**
-     * Handle 'modifier' classes like [[+placeholder:notempty=`class`]]
-     *
-     * @param array $currentClasses
-     * @param int $k
-     * @return array
-     */
-    private function handleModifierClasses($currentClasses, $k)
-    {
-        $modifierClasses = [];
-        preg_match_all('/(ifnotempty|isnotempty|notempty|!empty|default|ifempty|isempty|empty|then|else)=`(?\'classlist\'.*?)`/mis', $currentClasses[$k], $modifierClasses);
-        if (!empty($modifierClasses['classlist'])) {
-            foreach ($modifierClasses['classlist'] as $currentModifierClasses) {
-                $currentModifierClasses = explode(' ', $currentModifierClasses);
-                if (!empty($currentModifierClasses)) {
-                    $currentClasses[$k] = '';
-                    $currentClasses = array_merge($currentClasses, $currentModifierClasses);
-                }
-            }
-        }
-        return $currentClasses;
-    }
-
-    /**
-     * @param array $currentClasses
-     * @param int $k
-     * @return array
-     */
-    private function handleIfClasses($currentClasses, $k)
-    {
-        $ifClasses = [];
-        preg_match_all('/(&else|&then)=`(?\'classlist\'.*?)$/mis', $currentClasses[$k], $ifClasses);
-        $currentClasses[$k] = '';
-        if (!empty($ifClasses['classlist'])) {
-            $currentClasses = array_merge($currentClasses, $ifClasses['classlist']);
-        }
-        return $currentClasses;
+        return $this->getParser()->getDefaultClasses($content);
     }
 
     /**
@@ -220,65 +182,37 @@ class TailwindHelper
      * @param string $content
      * @return array
      */
-    function getAlpineClasses($content)
+    public function getAlpineClasses($content)
     {
-        $classes = [];
-        $contentClasses = [];
-
-        // detect :class="classlist" attributes
-        preg_match_all('/ :class=([\'"])(?\'classlist\'.*?)\1/mis', $content, $contentClasses);
-        if (!empty($contentClasses['classlist'])) {
-            foreach ($contentClasses['classlist'] as $currentClasses) {
-                $alpineClasses = [];
-                preg_match_all('/\'(?\'classlist\'.*?)\'/ms', $currentClasses, $alpineClasses);
-                if (empty($alpineClasses['classlist'])) {
-                    continue;
-                }
-                foreach ($alpineClasses['classlist'] as $currentAlpineClasses) {
-                    $currentAlpineClasses = ($currentAlpineClasses) ? explode(' ', $currentAlpineClasses) : [];
-                    if (!empty($currentAlpineClasses)) {
-                        $classes = array_merge($classes, $currentAlpineClasses);
-                    }
-                }
-            }
-        }
-
-        // detect x-transition:event="classlist" attributes
-        preg_match_all('/ x-transition:.*?=([\'"])(?\'classlist\'.*?)\1/mis', $content, $contentClasses);
-        if (!empty($contentClasses['classlist'])) {
-            foreach ($contentClasses['classlist'] as $currentClasses) {
-                $currentAlpineClasses = ($currentClasses) ? explode(' ', $currentClasses) : [];
-                if (!empty($currentAlpineClasses)) {
-                    $classes = array_merge($classes, $currentAlpineClasses);
-                }
-            }
-        }
-
-        $classes = array_filter($classes, [$this, 'filterEmpty']);
-        $classes = array_filter($classes, [$this, 'filterModxTags']);
-
-        return $classes;
+        return $this->getParser()->getAlpineClasses($content);
     }
 
     /**
-     * @param mixed $var
-     * @return bool
+     * Get the classes in the properties of MODX tags, which contain class or
+     * cls in their name.
+     *
+     * @param string $content
+     * @return array
      */
-    private function filterEmpty($var): bool
+    public function getPropertyClasses($content)
     {
-        return ($var !== null && $var !== false && $var !== '');
+        return $this->getParser()->getPropertyClasses($content);
     }
 
     /**
-     * @param mixed $var
-     * @return bool
+     * Get the options used by the manager scripts, so that no server paths are output in the manager
+     *
+     * @param array|null $options Options to filter instead of the class options
+     * @return array
      */
-    private function filterModxTags($var): bool
+    public function getManagerOptions(?array $options = null): array
     {
-        if ($this->getOption('removeModxTags')) {
-            return (strpos($var, '[[') === false && strpos($var, ']]') === false);
-        } else {
-            return true;
-        }
+        return array_intersect_key($options ?? $this->options, array_flip([
+            'assetsUrl',
+            'connectorUrl',
+            'debug',
+            'modxversion',
+            'version',
+        ]));
     }
 }
