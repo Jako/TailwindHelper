@@ -403,6 +403,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#detected-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Detected Classes
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#system-settings" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -426,10 +437,32 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parcel-2webpack" class="md-nav__link">
+  <a href="#tailwind-4" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Parcel 2/Webpack
+        Tailwind 4
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tailwind-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Tailwind 3
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tailwind-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Tailwind 2
       </span>
     </span>
   </a>
@@ -549,6 +582,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#detected-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Detected Classes
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#system-settings" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -572,10 +616,32 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parcel-2webpack" class="md-nav__link">
+  <a href="#tailwind-4" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Parcel 2/Webpack
+        Tailwind 4
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tailwind-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Tailwind 3
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tailwind-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Tailwind 2
       </span>
     </span>
   </a>
@@ -616,15 +682,55 @@
   <h1 id="__skip">Usage</h1>
 
 <h2 id="menu-entry">Menu Entry</h2>
-<p>To generate a safelist.json file with the content of chunks, templates,
-resources and template variables, you simply have to click on the TailwindHelper
-menu entry in the Extras menu. The target path of the safelist.json can be
-changed by a system setting.</p>
-<p>The CSS classes in the files are detected in standard <code>class="whatever"</code>
-attributes and Alpine.js <code>:class="{ 'whatever': variable === 'foo' }"</code>
-attributes. These examples will add <code>whatever</code> and <code>foo</code> to the detected
-classes. The class names are separated by the space character and included in
-the list as individual classes.</p>
+<p>To generate a safelist.json file, you simply have to click on the TailwindHelper
+menu entry in the Extras menu. TailwindHelper collects the CSS classes in the
+content of:</p>
+<ul>
+<li>chunks</li>
+<li>templates</li>
+<li>resources</li>
+<li>template variable default values</li>
+<li>template variable values of the resources</li>
+<li>ContentBlocks field and layout templates, if ContentBlocks is installed</li>
+<li>text files in the folders of the <code>tailwindhelper.filepaths</code> system setting</li>
+</ul>
+<p>For static chunks and templates, the content of the static file is scanned. For
+static resources, the content of their file is scanned, if it is a text file.
+Template variable values and default values with a <code>@FILE</code> binding are read
+from the file.</p>
+<p>The target path of the safelist.json can be changed with the
+<code>tailwindhelper.safelistFolder</code> system setting. The menu entry is only shown to
+manager users with the <code>settings</code> permission.</p>
+<h2 id="detected-classes">Detected Classes</h2>
+<p>The CSS classes are detected in:</p>
+<ul>
+<li>standard <code>class="whatever"</code> attributes</li>
+<li>Alpine.js <code>:class="{ 'whatever': variable === 'foo' }"</code> and <code>x-bind:class</code>
+  attributes. All strings in single quotes are added, so this example will add
+  <code>whatever</code> and <code>foo</code> to the detected classes.</li>
+<li>Alpine.js <code>x-transition</code> attributes like <code>x-transition:enter="whatever"</code></li>
+<li>properties of MODX tags with <code>class</code> or <code>cls</code> in their name like
+  <code>[[$chunk? &amp;cls=`whatever`]]</code> or the <code>&amp;hereClass</code>, <code>&amp;rowClass</code> and
+  <code>&amp;outerClass</code> properties of menu snippets. xPDO class names in the <code>&amp;class</code>
+  property of snippets like pdoResources are skipped.</li>
+</ul>
+<p>The attributes are also detected with escaped quotes like <code>class=\"whatever\"</code>
+in JSON encoded HTML (i.e. in MIGX template variable values) or in PHP and
+JavaScript strings. Quotes, that are escaped multiple times like in nested MIGX
+values, are detected too.</p>
+<p>The class names are separated by whitespace and included in the list as
+individual classes.</p>
+<p>MODX tags in the class attributes are handled as well. The classes in the values
+of output modifiers like <code>[[+placeholder:notempty=`whatever`]]</code> (<code>then</code>,
+<code>else</code>, <code>notempty</code>, <code>isnotempty</code>, <code>ifnotempty</code>, <code>!empty</code>, <code>empty</code>, <code>isempty</code>,
+<code>ifempty</code> and <code>default</code>) and in the <code>&amp;then</code> and <code>&amp;else</code> properties of If snippet
+calls are added to the detected classes. Other MODX tags like <code>[[+placeholder]]</code>
+are removed from the list, if the <code>tailwindhelper.removeModxTags</code> system setting
+is enabled.</p>
+<p>A MODX tag in a longer class like <code>bg-[[+color]]</code> is kept as part of that class.
+With the <code>tailwindhelper.removeModxTags</code> system setting enabled, the whole class
+is removed from the list. Tailwind arbitrary values with <code>[[</code> like
+<code>grid-cols-[[full-start]_1fr]</code> are no MODX tags and stay in the list.</p>
 <h2 id="system-settings">System Settings</h2>
 <p>TailwindHelper uses the following system settings in the namespace
 <code>tailwindhelper</code>:</p>
@@ -647,54 +753,64 @@ the list as individual classes.</p>
 <tr>
 <td>tailwindhelper.filepaths</td>
 <td>File Paths</td>
-<td>Comma-separated list of file paths that are recursively searched for files with the mimetype text/plain or text/html. The content of these files is searched for CSS classes for safelist.json.</td>
+<td>Comma-separated list of folders that are recursively searched for text files (e.g. HTML, PHP, JavaScript, JSON, XML or SVG files). The content of these files is searched for CSS classes for the safelist.json. The placeholders {core_path}, {base_path} and {assets_path} can be used.</td>
 <td>-</td>
 </tr>
 <tr>
 <td>tailwindhelper.removeModxTags</td>
 <td>Remove MODX Tags</td>
-<td>Remove remaining MODX tags in the safelist.json.</td>
+<td>Remove the classes with MODX tags from the safelist.json.</td>
 <td>Yes</td>
 </tr>
 <tr>
 <td>tailwindhelper.safelistFolder</td>
 <td>Safelist Folder</td>
-<td>The location of the safelist.json.</td>
+<td>The folder of the safelist.json. The placeholders {core_path}, {base_path} and {assets_path} can be used.</td>
 <td><code>{core_path}components/tailwindhelper/elements/purge/</code></td>
 </tr>
 </tbody>
 </table>
 <h2 id="example-usage">Example usage</h2>
-<h3 id="parcel-2webpack">Parcel 2/Webpack</h3>
-<p>If you want to purge your tailwind css with <a href="https://parceljs.org/">Parcel 2</a> or in <a href="https://webpack.js.org/">Webpack</a>,
-you have to refer the created <code>safelist.json</code> in the <code>tailwind.config.js</code> to reduce
-the size of the build:</p>
-<div class="language-js highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">safelist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./path-to-your-core/core/components/tailwindhelper/elements/purge/safelist.json&#39;</span><span class="p">);</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nx">safelist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">safelist</span><span class="p">.</span><span class="nx">concat</span><span class="p">([</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="s1">&#39;additional-class&#39;</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="p">]);</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="p">...</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="nx">purge</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">        </span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;./src/**/*.html&#39;</span><span class="p">],</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">        </span><span class="nx">safelist</span><span class="o">:</span><span class="w"> </span><span class="nx">safelist</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="p">},</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="p">...</span>
+<p>The created <code>safelist.json</code> has to be referenced in your Tailwind configuration,
+so that the used CSS classes are not removed from the build. The examples use the
+default location of the <code>safelist.json</code>. Change the path, if you have changed the
+<code>tailwindhelper.safelistFolder</code> system setting.</p>
+<h3 id="tailwind-4">Tailwind 4</h3>
+<p>Tailwind 4 scans the files in an <code>@source</code> directive for class names. Add the
+<code>safelist.json</code> as a source in your main CSS file. The path is relative to that
+CSS file:</p>
+<div class="language-css highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">@</span><span class="k">import</span><span class="w"> </span><span class="s2">&quot;tailwindcss&quot;</span><span class="p">;</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="p">@</span><span class="k">source</span><span class="w"> </span><span class="s2">&quot;./path-to-your-core/core/components/tailwindhelper/elements/purge/safelist.json&quot;</span><span class="p">;</span>
 </span></code></pre></div>
-<p>In Tailwind 3 purgeCSS is not used anymore and you have to reference the safelist.json directly in a safelist configuration:</p>
-<div class="language-js highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">safelist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./path-to-your-core/core/components/tailwindhelper/elements/purge/safelist.json&#39;</span><span class="p">);</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nx">safelist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">safelist</span><span class="p">.</span><span class="nx">concat</span><span class="p">([</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="s1">&#39;additional-class&#39;</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">]);</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="p">...</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">        </span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;./src/**/*.html&#39;</span><span class="p">],</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="p">},</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="nx">safelist</span><span class="o">:</span><span class="w"> </span><span class="nx">safelist</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="p">...</span>
+<h3 id="tailwind-3">Tailwind 3</h3>
+<p>Reference the <code>safelist.json</code> in the <code>safelist</code> option of the <code>tailwind.config.js</code>:</p>
+<div class="language-js highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">safelist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./path-to-your-core/core/components/tailwindhelper/elements/purge/safelist.json&#39;</span><span class="p">).</span><span class="nx">concat</span><span class="p">([</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="s1">&#39;additional-class&#39;</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="p">]);</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;./src/**/*.html&#39;</span><span class="p">],</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nx">safelist</span><span class="o">:</span><span class="w"> </span><span class="nx">safelist</span><span class="p">,</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="c1">// your other options</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">};</span>
+</span></code></pre></div>
+<h3 id="tailwind-2">Tailwind 2</h3>
+<p>Tailwind 2 removes the unused classes with PurgeCSS in a production build.
+Reference the <code>safelist.json</code> in the <code>purge.options.safelist</code> option of the
+<code>tailwind.config.js</code>:</p>
+<div class="language-js highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">safelist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./path-to-your-core/core/components/tailwindhelper/elements/purge/safelist.json&#39;</span><span class="p">).</span><span class="nx">concat</span><span class="p">([</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="s1">&#39;additional-class&#39;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="p">]);</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nx">purge</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">        </span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;./src/**/*.html&#39;</span><span class="p">],</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">        </span><span class="nx">options</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">            </span><span class="nx">safelist</span><span class="o">:</span><span class="w"> </span><span class="nx">safelist</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="p">},</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="c1">// your other options</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="p">};</span>
 </span></code></pre></div>
 
 
